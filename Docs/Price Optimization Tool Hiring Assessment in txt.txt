@@ -1,0 +1,77 @@
+Price Optimization Tool – Hiring Assessment
+
+About Client
+A leading global enterprise seeks to improve and optimize its pricing strategy through the development of a Price Optimization Tool. This will allow users to input product data, analyse pricing trends, and receive optimal pricing recommendations.
+
+Problem Statement
+In the digital era, efficient pricing is crucial for businesses to stay competitive. The client requires a web application that enables business users to determine optimal pricing strategies based on demand forecasts and market conditions.
+
+The goal is to create a multi-functional interface that addresses these needs effectively, integrating several functionalities while maintaining ease of use and performance efficiency.
+
+Specific Challenges
+* Dynamic User Roles and Permissions
+o Implement a flexible user authentication and authorization system with dynamic role assignment (admin, buyer, supplier, custom roles).
+
+* Product Management
+o Securely manage product data with robust search and filtering, while adhering to data privacy regulations.
+
+* Demand Forecast Integration
+o Enable visualization of product demand trajectory and forecasts.
+
+* Pricing Optimization
+o Recommend optimized product prices based on business inputs.
+
+Functional Requirements
+PART A: Product Management
+* Create and Manage Products
+o Create, view, update, and delete products.
+o Product attributes: name, category, cost price, selling price, description, stock available, units sold.
+* Search and Filter Products
+o Advanced search by product name.
+o Filters (e.g., category).
+
+PART B: Demand Forecast & Pricing Optimization
+* Demand Forecast
+o Show demand forecasts for products.
+o Visualize forecasted demand vs selling price on a linear plot.
+* Pricing Optimization
+o Display optimized prices in tabular format along with product details.
+
+Technical Requirements
+* User Authentication & Authorization
+o User registration/login with email verification.
+o Role-based access control for different user roles.
+
+* Backend
+o Python (Django/Flask/FastAPI) or Node.js.
+o Focus on scalability and security.
+
+* Frontend
+o React.js or Angular with responsive UI.
+o Data visualization using Chart.js / D3.js.
+
+* Database
+o Relational DB (PostgreSQL/MySQL).
+o Apply normalization and indexing for performance.
+
+* Code Quality
+o Well-structured, modular, and documented.
+o Include a README.md with setup and project overview.
+
+* UI/UX
+o Clean, intuitive, and responsive design.
+o Clear visualization of demand forecasts and price recommendations.
+
+Product Attributes
+* Product ID
+* Name
+* Description
+* Cost Price
+* Selling Price
+* Category
+* Stock Available
+* Units Sold
+* Customer Rating
+* Demand Forecast
+* Optimized Price
+
