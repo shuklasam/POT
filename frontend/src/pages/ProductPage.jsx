@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import AddProductModal from '../components/AddProductModal';
 import DemandForecastModal from '../components/DemandForecastModal';
+import Fuse from 'fuse.js';
 
 export default function ProductPage() {
   const navigate = useNavigate();
@@ -54,12 +55,17 @@ export default function ProductPage() {
   const toggleSelectAll = () => {
     setSelected(selected.length === filtered.length ? [] : filtered.map((p) => p.product_id));
   };
+// this is my fuzzy search function =
+ const fuse = new Fuse(products, {
+  keys: ['name', 'category', 'description'],  // fields to search in
+  threshold: 0.4,  // 0 = exact match, 1 = match anything
+});
 
-  const filtered = products.filter((p) => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = category ? p.category === category : true;
-    return matchSearch && matchCategory;
-  });
+  const filtered = search
+  ? fuse.search(search)
+      .map((result) => result.item)
+      .filter((p) => category ? p.category === category : true)
+  : products.filter((p) => category ? p.category === category : true);
 
   const categories = [...new Set(products.map((p) => p.category).filter(Boolean))];
 
@@ -98,7 +104,7 @@ export default function ProductPage() {
         <div style={styles.toolbarRight}>
           <input
             style={styles.search}
-            placeholder="🔍 Search"
+            placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -172,7 +178,7 @@ export default function ProductPage() {
                   )}
                   <td style={styles.td}>
                     <button style={styles.iconBtn} title="View">👁</button>
-                    <button style={styles.iconBtn} title="Edit" onClick={() => handleEdit(p)}>✏️</button>
+                    <button style={styles.editBtn} title="Edit" onClick={() => handleEdit(p)}>✏️</button>
                     <button style={styles.iconBtnRed} title="Delete" onClick={() => handleDelete(p.product_id)}>🗑</button>
                   </td>
                 </tr>
@@ -182,13 +188,13 @@ export default function ProductPage() {
         )}
       </div>
 
-      {/* Footer */}
+      
       <div style={styles.footer}>
         <button style={styles.cancelBtn} onClick={() => navigate('/')}>Cancel</button>
         <button style={styles.saveBtn}>Save</button>
       </div>
 
-      {/* Modals */}
+      
       {showAddModal && (
         <AddProductModal
           product={editProduct}
@@ -240,10 +246,11 @@ const styles = {
   trEven: { backgroundColor: '#1a1a1a' },
   trOdd: { backgroundColor: '#1f1f1f' },
   trSelected: { backgroundColor: '#0a2e28' },
-  iconBtn: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px', marginRight: '4px' },
-  iconBtnRed: { background: 'none', border: 'none', cursor: 'pointer', fontSize: '16px' },
   loading: { color: '#aaa', textAlign: 'center', padding: '40px' },
   footer: { padding: '16px 32px', display: 'flex', justifyContent: 'flex-end', gap: '12px', borderTop: '1px solid #333', backgroundColor: '#111' },
   cancelBtn: { padding: '8px 20px', backgroundColor: 'transparent', border: '1px solid #555', color: 'white', borderRadius: '6px', cursor: 'pointer' },
   saveBtn: { padding: '8px 20px', backgroundColor: '#00D4AA', border: 'none', color: '#000', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' },
+  iconBtn: { background: 'none',border: 'none',cursor: 'pointer', fontSize: '16px',padding: '4px 8px',marginRight: '4px',filter: 'brightness(0) invert(1)',},
+  editBtn: { background: 'none',border: 'none',cursor: 'pointer', fontSize: '16px',padding: '4px 8px',marginRight: '4px',},
+  iconBtnRed: { background: 'rgba(255,68,68,0.2)',border: 'none',cursor: 'pointer', fontSize: '16px',padding: '4px 8px',borderRadius: '4px',color: 'white',},
 };

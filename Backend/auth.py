@@ -60,23 +60,11 @@ def get_current_user(
 
 
 def require_permission(action: models.PermissionAction):
-    """
-    FastAPI dependency factory for RBAC.
-
-    Usage in a route:
-        Depends(require_permission(PermissionAction.product_create))
-
-    How it works:
-    1. Decodes JWT -> gets user + role
-    2. Admins bypass the table check (superuser shortcut)
-    3. For all other roles, queries role_permissions table
-       -> truly dynamic: grant/revoke by inserting/deleting rows, no code change needed
-    """
     def _check(
         current_user: models.User = Depends(get_current_user),
         db: Session = Depends(get_db),
     ) -> models.User:
-        # Admins are always allowed
+        # Admins are allowed and bypass the table check 
         if current_user.role == models.UserRole.admin:
             return current_user
 
@@ -93,3 +81,20 @@ def require_permission(action: models.PermissionAction):
         return current_user
 
     return _check
+# here email verification logic is written - 
+def create_verification_token(email: str) -> str:
+    expire = datetime.now(timezone.utc) + timedelta(hours=24)
+    return jwt.encode(
+        {"sub": email, "exp": expire, "type": "verification"},
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+def verify_verification_token(token: str) -> str:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        if payload.get("type") != "verification":
+            raise HTTPException(status_code=400, detail="Invalid token type")
+        return payload.get("sub")  # returns email
+    except JWTError:
+        raise HTTPException(status_code=400, detail="Invalid or expired token")

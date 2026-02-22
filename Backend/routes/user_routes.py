@@ -1,7 +1,7 @@
-"""
-Admin-only endpoints for user management.
-Lets an admin view all users and change a user's role dynamically.
-"""
+
+# Admin-only endpoints for user management.
+# admin can view all users and change a user's role dynamically.
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
@@ -22,7 +22,7 @@ def list_users(
     db: Session = Depends(get_db),
     _: models.User = Depends(auth.require_permission(PermissionAction.user_manage)),
 ):
-    """Admin only: list all users."""
+   #Admin view all users and their roles
     return db.query(models.User).all()
 
 
@@ -33,7 +33,7 @@ def change_user_role(
     db: Session = Depends(get_db),
     _: models.User = Depends(auth.require_permission(PermissionAction.user_manage)),
 ):
-    """Admin only: change a user's role (dynamic role assignment)."""
+    # Here Dynamic Role assignment is done : Admin only can change user role
     user = db.query(models.User).filter(models.User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -49,7 +49,7 @@ def get_role_permissions(
     db: Session = Depends(get_db),
     _: models.User = Depends(auth.require_permission(PermissionAction.user_manage)),
 ):
-    """Admin only: see what a role can do."""
+    # admin sees = what role can do what
     perms = db.query(models.RolePermission).filter(
         models.RolePermission.role == role
     ).all()
@@ -63,7 +63,7 @@ def grant_permission(
     db: Session = Depends(get_db),
     _: models.User = Depends(auth.require_permission(PermissionAction.user_manage)),
 ):
-    """Admin only: dynamically grant a permission to a role."""
+    # Admin can grant permission to a role
     existing = db.query(models.RolePermission).filter(
         models.RolePermission.role == role,
         models.RolePermission.action == action,
@@ -83,7 +83,7 @@ def revoke_permission(
     db: Session = Depends(get_db),
     _: models.User = Depends(auth.require_permission(PermissionAction.user_manage)),
 ):
-    """Admin only: dynamically revoke a permission from a role."""
+    # Admin can revoke permission from a role
     perm = db.query(models.RolePermission).filter(
         models.RolePermission.role == role,
         models.RolePermission.action == action,

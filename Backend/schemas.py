@@ -6,7 +6,7 @@ from models import UserRole
 
 
 
-# ── Auth Schemas ──────────────────────────────────────────────
+# Auth Schemas
 class UserRegister(BaseModel):
     username: str = Field(min_length=3, max_length=50) 
     email: EmailStr
@@ -36,7 +36,7 @@ class Token(BaseModel):
     user: UserOut
 
 
-# ── Product Schemas ───────────────────────────────────────────
+# Product Schemas
 class ProductCreate(BaseModel):
     name: str
     description: Optional[str] = None
@@ -78,7 +78,7 @@ class ProductOut(BaseModel):
     model_config = {"from_attributes": True}
 
 
-# ── Forecast & Optimization Schemas ──────────────────────────
+# Forecast & Optimization Schemas 
 class ForecastItem(BaseModel):
     product_id: int
     name: str

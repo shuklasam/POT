@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import Fuse from 'fuse.js';
 
 export default function OptimizationPage() {
   const navigate = useNavigate();
@@ -25,11 +26,16 @@ export default function OptimizationPage() {
     }
   };
 
-  const filtered = products.filter((p) => {
-    const matchSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchCategory = category ? p.category === category : true;
-    return matchSearch && matchCategory;
+  const fuse = new Fuse(products, {
+    keys: ['name', 'category', 'description'],
+    threshold: 0.4,
   });
+
+  const filtered = search
+    ? fuse.search(search)
+        .map((result) => result.item)
+        .filter((p) => category ? p.category === category : true)
+  : products.filter((p) => category ? p.category === category : true);
 
   const categories = [...new Set(products.map((p) => p.category).filter(Boolean))];
 

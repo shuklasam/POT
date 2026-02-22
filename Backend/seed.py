@@ -1,10 +1,3 @@
-"""
-Run: python seed.py
-- Creates tables
-- Seeds default role permissions
-- Creates admin@demo.com / admin123
-- Loads product_data.csv
-"""
 import sys, os
 sys.path.insert(0, os.path.dirname(__file__))
 
@@ -17,18 +10,9 @@ from decimal import Decimal
 models.Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 
-# ── Default Permission Matrix ─────────────────────────────────
-#
-#  Role      | product_read | product_create | product_update | product_delete | forecast_view | optimize_view | user_manage
-#  ----------|--------------|----------------|----------------|----------------|---------------|---------------|------------
-#  admin     |  (bypassed – admin always allowed in code)
-#  supplier  |      ✅      |       ✅       |       ✅       |       ❌       |       ✅      |       ✅      |     ❌
-#  buyer     |      ✅      |       ❌       |       ❌       |       ❌       |       ✅      |       ✅      |     ❌
-#  custom    |      ✅      |       ❌       |       ❌       |       ❌       |       ❌      |       ❌      |     ❌
-#
-# 'custom' starts with minimal perms. Admin can grant more via /api/users/permissions/{role}/{action}
 
 DEFAULT_PERMISSIONS = [
+    # admin bypasses all permissions
     # supplier
     (models.UserRole.supplier, models.PermissionAction.product_read),
     (models.UserRole.supplier, models.PermissionAction.product_create),
@@ -52,7 +36,7 @@ if existing_perms == 0:
 else:
     print(f"ℹ️  Role permissions already seeded ({existing_perms} rows)")
 
-# ── Admin user ───────────────────────────────────────────────
+# Admin user
 existing_admin = db.query(models.User).filter(models.User.email == "admin@demo.com").first()
 if not existing_admin:
     admin = models.User(
@@ -71,7 +55,7 @@ else:
     admin_id = existing_admin.id
     print("ℹ️  Admin user already exists")
 
-# ── Products from CSV ────────────────────────────────────────
+# Product data = from CSV
 csv_path = os.path.join(os.path.dirname(__file__), "product_data.csv")
 if not os.path.exists(csv_path):
     csv_path = "product_data.csv"
@@ -94,11 +78,11 @@ try:
                 created_by=admin_id,
             ))
         db.commit()
-        print(f"✅ Seeded {len(df)} products")
+        print(f"Seeded {len(df)} products")
     else:
-        print("ℹ️  Products already seeded")
+        print("Products already seeded")
 except FileNotFoundError:
-    print(f"⚠️  CSV not found, skipping product seed")
+    print(f"CSV not found, skipping product seed")
 
 db.close()
-print("✅ Done!")
+print("Done")

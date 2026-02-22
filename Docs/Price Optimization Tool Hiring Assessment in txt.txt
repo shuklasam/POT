@@ -1,4 +1,4 @@
-Price Optimization Tool – Hiring Assessment
+Price Optimization Tool -- Hiring Assessment
 
 About Client
 A leading global enterprise seeks to improve and optimize its pricing strategy through the development of a Price Optimization Tool. This will allow users to input product data, analyse pricing trends, and receive optimal pricing recommendations.

@@ -17,7 +17,7 @@ export default function LandingPage() {
         <span style={styles.logo}>Price Optimization Tool</span>
         <div style={styles.navRight}>
           <span style={styles.welcome}>
-            Welcome, <span style={styles.username}>{user.username}</span>
+            Welcome, <span>{user.username}</span> ({user.role})
           </span>
           <button style={styles.logoutBtn} onClick={handleLogout}>Logout</button>
         </div>
@@ -27,7 +27,7 @@ export default function LandingPage() {
       <div style={styles.hero}>
         <h1 style={styles.title}>Price Optimization Tool</h1>
         <p style={styles.subtitle}>
-          A powerful tool to manage products, forecast demand,
+          A powerful tool to manage products, forecast demand
           and optimize pricing strategies for your business.
         </p>
 

@@ -1,13 +1,18 @@
 # Backend
 Backend/venv/
 Backend/__pycache__/
+Backend/routes/__pycache__/
 Backend/*.pyc
 Backend/.env
+Backend/demand_model.pkl
+Backend/demand_scaler.pkl
 
 # Frontend
 frontend/node_modules/
 frontend/dist/
+frontend/.env
 
 # General
 .DS_Store
 *.log
+*.env
