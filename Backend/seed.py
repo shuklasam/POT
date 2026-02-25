@@ -32,9 +32,9 @@ if existing_perms == 0:
     for role, action in DEFAULT_PERMISSIONS:
         db.add(models.RolePermission(role=role, action=action))
     db.commit()
-    print(f"✅ Seeded {len(DEFAULT_PERMISSIONS)} role permissions")
+    print(f"Seeded {len(DEFAULT_PERMISSIONS)} role permissions")
 else:
-    print(f"ℹ️  Role permissions already seeded ({existing_perms} rows)")
+    print(f"Role permissions already seeded ({existing_perms} rows)")
 
 # Admin user
 existing_admin = db.query(models.User).filter(models.User.email == "admin@demo.com").first()
@@ -50,10 +50,10 @@ if not existing_admin:
     db.commit()
     db.refresh(admin)
     admin_id = admin.id
-    print("✅ Admin user created: admin@demo.com / admin123")
+    print("Admin user created: admin@demo.com / admin123")
 else:
     admin_id = existing_admin.id
-    print("ℹ️  Admin user already exists")
+    print("Admin user already exists")
 
 # Product data = from CSV
 csv_path = os.path.join(os.path.dirname(__file__), "product_data.csv")

@@ -56,7 +56,7 @@ def verify_email(token: str, db: Session = Depends(get_db)):
     if user.is_verified:
         return {"message": "Email already verified. You can login!"}
 
-    user.is_verified = True
+    user.is_verified = True #this is where it marks as true for verified user
     db.commit()
     return {"message": "Email verified successfully! You can now login."}
 

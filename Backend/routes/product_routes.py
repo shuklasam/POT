@@ -199,3 +199,4 @@ def delete_product(
         raise HTTPException(status_code=404, detail="Product not found")
     db.delete(product)
     db.commit()
+

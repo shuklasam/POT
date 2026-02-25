@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import AddProductModal from '../components/AddProductModal';
@@ -17,8 +17,20 @@ export default function ProductPage() {
   const [editProduct, setEditProduct] = useState(null);
   const [showDemandCol, setShowDemandCol] = useState(false);
   const [selected, setSelected] = useState([]);
+  const [debouncedSearch , setDebouncedSearch] = useState('');
+  const timeref = useRef(null);
 
-  useEffect(() => { fetchProducts(); }, []);
+  useEffect(() => {
+    fetchProducts();
+  },[]);
+
+// debounced effect =
+  useEffect(() =>{
+    const handler = setTimeout(()=>{
+      setDebouncedSearch(search);
+    },1000);
+    return () => clearTimeout(timeref.current);
+  },[search]);
 
   const fetchProducts = async () => {
     try {
@@ -29,8 +41,9 @@ export default function ProductPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
+  
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this product?')) return;
     try {
@@ -56,13 +69,19 @@ export default function ProductPage() {
     setSelected(selected.length === filtered.length ? [] : filtered.map((p) => p.product_id));
   };
 // this is my fuzzy search function =
- const fuse = new Fuse(products, {
-  keys: ['name', 'category', 'description'],  // fields to search in
-  threshold: 0.4,  // 0 = exact match, 1 = match anything
-});
+//  const fuse = new Fuse(products, {
+//   keys: ['name', 'category', 'description'],  // fields to search in
+//   threshold: 0.4,  // 0 = exact match, 1 = match anything
+// });
+// used useMemo to prevent re-rendering, only renders when products changes=
+// implementing debounced search inside fuse logic =
+  const fuse = useMemo(()=> new Fuse(products, {
+    keys: ['name', 'category', 'description'],  // fields to search in
+    threshold: 0.4,  // 0 = exact match, 1 = match anything
+  }),[products]);
 
-  const filtered = search
-  ? fuse.search(search)
+  const filtered = debouncedSearch
+  ? fuse.search(debouncedSearch)
       .map((result) => result.item)
       .filter((p) => category ? p.category === category : true)
   : products.filter((p) => category ? p.category === category : true);

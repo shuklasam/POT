@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
 import Fuse from 'fuse.js';
@@ -10,6 +10,15 @@ export default function OptimizationPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const timer = useRef(null);
+
+  useEffect(() => {
+    timer.current = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 1000);
+    return () => clearTimeout(timer.current);
+  }, [search]);
 
   useEffect(() => {
     fetchOptimized();
@@ -26,13 +35,13 @@ export default function OptimizationPage() {
     }
   };
 
-  const fuse = new Fuse(products, {
+  const fuse = useMemo(() => new Fuse(products, {
     keys: ['name', 'category', 'description'],
     threshold: 0.4,
-  });
+  }), [products]);
 
-  const filtered = search
-    ? fuse.search(search)
+  const filtered = debouncedSearch
+    ? fuse.search(debouncedSearch)
         .map((result) => result.item)
         .filter((p) => category ? p.category === category : true)
   : products.filter((p) => category ? p.category === category : true);
@@ -63,7 +72,7 @@ export default function OptimizationPage() {
         <div style={styles.toolbarRight}>
           <input
             style={styles.search}
-            placeholder="🔍 Search"
+            placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
