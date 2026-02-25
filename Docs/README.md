@@ -35,3 +35,7 @@ A modern full-stack implementation for product management, demand forecasting, a
 
 ---
 *For detailed implementation details, architecture diagrams, and API references, see the [Technical Documentation](./Technical_Documentation.md).*
+site is live here - 
+Frontend → https://price-optimization-tool.vercel.app
+Backend  → https://price-optimization-backend-96dj.onrender.com
+Docs     → https://price-optimization-backend-96dj.onrender.com/docs
